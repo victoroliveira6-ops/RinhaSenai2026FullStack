@@ -56,9 +56,8 @@ async function testRules() {
   check('rules', 'POST /api/transactions retorna 201', visa.status === 201)
   check('rules', 'Status approved para cartao valido', visa.data?.status === 'approved')
   check('rules', 'Bandeira visa detectada (4xxx)', visa.data?.card_brand === 'visa')
-  // TEMPORARIO: forcando erros para testar formatacao do comentario
-  check('rules', 'Taxa visa 2.5% correta (250)', visa.data?.fee_cents === 999, `recebeu=${visa.data?.fee_cents} esperado=999`)
-  check('rules', 'net_amount = amount - fee (9750)', visa.data?.net_amount === 1234, `recebeu=${visa.data?.net_amount} esperado=1234`)
+  check('rules', 'Taxa visa 2.5% correta (250)', visa.data?.fee_cents === 250)
+  check('rules', 'net_amount = amount - fee (9750)', visa.data?.net_amount === 9750)
 
   // Idempotency
   const idem = await api('POST', '/api/transactions', {
@@ -332,8 +331,7 @@ async function testStress() {
   check('stress', `${created}/${TOTAL} transacoes criadas`, created >= TOTAL * 0.8,
     `${created} de ${TOTAL}`)
   check('stress', 'Zero erros 500', errors500 === 0, errors500 > 0 ? `${errors500} erros` : '')
-  // TEMPORARIO: forcando erro para testar formatacao
-  check('stress', `Throughput: ${throughput} txn/s`, throughput > 9999, `${elapsed}ms -- esperava >9999`)
+  check('stress', `Throughput: ${throughput} txn/s`, throughput > 0, `${elapsed}ms`)
   results.metrics = results.metrics || {}
   results.metrics.throughput = throughput
   results.metrics.stress_elapsed_ms = elapsed

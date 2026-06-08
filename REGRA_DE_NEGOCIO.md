@@ -79,17 +79,8 @@ Transacoes `declined` **sao salvas** no banco mas **nao contam** no saldo nem no
 
 ---
 
-## Idempotencia
-
-- O frontend gera um `idempotency_key` (UUID) a cada submit
-- Se ja existe transacao com esse key, retorna a existente (HTTP 200, nao 201)
-- UNIQUE constraint na coluna `idempotency_key`
-
----
-
 ## Validacoes de campos
 
-- `idempotency_key` obrigatorio, UUID valido, UNIQUE
 - `amount_cents` deve ser > 0 e <= 1000000 (R$10.000,00)
 - `card_number` exatamente 16 digitos numericos
 - `cvv` 3 ou 4 digitos numericos
@@ -108,7 +99,6 @@ Transacoes `declined` **sao salvas** no banco mas **nao contam** no saldo nem no
 
 ```json
 {
-  "idempotency_key": "uuid-gerado-pelo-frontend",
   "card_number": "4111111111111111",
   "holder_name": "Joao Silva",
   "expiration": "12/28",
@@ -313,6 +303,6 @@ Se 0 rows affected = ja foi estornado.
 
 | Categoria | Pontos | O que testa |
 |-----------|--------|-------------|
-| Regras de negocio | 50 | Taxas, juros, limites, idempotencia, estorno |
+| Regras de negocio | 50 | Taxas, juros, limites, estorno, concorrencia |
 | Frontend | 30 | Classes CSS, formulario, historico, paginacao |
 | Stress test | 20 | 200 txns concorrentes, throughput, latencia p95 |

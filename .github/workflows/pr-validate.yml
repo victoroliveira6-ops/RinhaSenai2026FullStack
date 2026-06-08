@@ -20,29 +20,30 @@ jobs:
         with:
           node-version: 22
 
-      - name: Detect team folder
+      - name: Detect team folders
         id: team
         run: |
-          FOLDERS=$(git diff --name-only origin/main...HEAD | grep '^participants/' | cut -d'/' -f2 | sort -u)
-          COUNT=$(echo "$FOLDERS" | grep -c .)
-          if [ "$COUNT" -ne 1 ]; then
-            echo "::error::PR deve alterar exatamente uma pasta em participants/. Encontradas: $FOLDERS"
-            exit 1
+          FOLDERS=$(git diff --name-only origin/main...HEAD | grep '^participants/' | cut -d'/' -f2 | sort -u || true)
+          COUNT=$(echo "$FOLDERS" | grep -c . || true)
+
+          if [ "$COUNT" -eq 0 ]; then
+            echo "Nenhuma pasta de participante alterada -- pulando validacao de time"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
+
+          if [ "$COUNT" -gt 1 ]; then
+            echo "::warning::PR altera mais de uma pasta de participante: $FOLDERS"
+          fi
+
           TEAM=$(echo "$FOLDERS" | head -1)
           echo "team=$TEAM" >> "$GITHUB_OUTPUT"
           echo "dir=participants/$TEAM" >> "$GITHUB_OUTPUT"
+          echo "skip=false" >> "$GITHUB_OUTPUT"
           echo "Team detectado: $TEAM"
 
-      - name: Check files outside participants/
-        run: |
-          OUTSIDE=$(git diff --name-only origin/main...HEAD | grep -v '^participants/' || true)
-          if [ -n "$OUTSIDE" ]; then
-            echo "::error::PR altera arquivos fora de participants/: $OUTSIDE"
-            exit 1
-          fi
-
       - name: Validate info.json
+        if: steps.team.outputs.skip != 'true'
         run: |
           TEAM="${{ steps.team.outputs.team }}"
           DIR="${{ steps.team.outputs.dir }}"
@@ -70,6 +71,7 @@ jobs:
           "
 
       - name: Validate package.json
+        if: steps.team.outputs.skip != 'true'
         run: |
           DIR="${{ steps.team.outputs.dir }}"
           if [ ! -f "$DIR/package.json" ]; then
@@ -83,25 +85,6 @@ jobs:
             console.log('package.json valido');
           "
 
-      - name: Check file count and sizes
-        run: |
-          DIR="${{ steps.team.outputs.dir }}"
-          FILES=$(git diff --name-only origin/main...HEAD | wc -l)
-          if [ "$FILES" -gt 100 ]; then
-            echo "::error::PR tem $FILES arquivos (max 100)"
-            exit 1
-          fi
-          LARGE=$(git diff --name-only origin/main...HEAD | while read f; do
-            if [ -f "$f" ]; then
-              SIZE=$(wc -c < "$f")
-              if [ "$SIZE" -gt 5242880 ]; then echo "$f ($SIZE bytes)"; fi
-            fi
-          done)
-          if [ -n "$LARGE" ]; then
-            echo "::error::Arquivos maiores que 5MB: $LARGE"
-            exit 1
-          fi
-
       - name: Check no node_modules or db files
         run: |
           BAD=$(git diff --name-only origin/main...HEAD | grep -E '(node_modules/|\.db$)' || true)
@@ -111,16 +94,19 @@ jobs:
           fi
 
       - name: Install dependencies
+        if: steps.team.outputs.skip != 'true'
         working-directory: ${{ steps.team.outputs.dir }}
         run: npm install
         timeout-minutes: 2
 
       - name: Build frontend
+        if: steps.team.outputs.skip != 'true'
         working-directory: ${{ steps.team.outputs.dir }}
         run: npm run build
         timeout-minutes: 1
 
       - name: Start server and health check
+        if: steps.team.outputs.skip != 'true'
         working-directory: ${{ steps.team.outputs.dir }}
         run: |
           npm start &

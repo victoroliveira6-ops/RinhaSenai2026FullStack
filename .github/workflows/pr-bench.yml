@@ -92,7 +92,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: `## ❌ Benchmark falhou -- ${team}\n\nO bench nao conseguiu gerar resultados. Verifique os logs.`
+                body: `## ❌ Benchmark falhou: ${team}\n\nO bench nao conseguiu gerar resultados. Verifique os logs.`
               });
               return;
             }
@@ -137,7 +137,7 @@ jobs:
               return md;
             }
 
-            let body = `## ${status} Resultado — ${team}\n\n`;
+            let body = `## ${status} Resultado: ${team}\n\n`;
             body += `### Pontuacao: **${totalScore}/100**\n\n`;
             body += `| Categoria | Testes | Pontos |\n`;
             body += `|-----------|--------|--------|\n`;

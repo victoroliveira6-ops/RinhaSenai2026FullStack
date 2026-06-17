@@ -1,25 +1,27 @@
-import { Routes, Route, Link } from 'react-router'
+import { Routes, Route } from 'react-router'
+import { AppDataProvider } from './context/AppDataContext.jsx'
+import Sidebar from './components/Sidebar.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import History from './pages/History.jsx'
 import Detail from './pages/Detail.jsx'
 
 export default function App() {
   return (
-    <div className="app-shell">
-      <nav className="topbar">
-        <Link className="brand" to="/">Rinha Pay</Link>
-        <div className="nav-links">
-          <Link to="/">Dashboard</Link>
-          <Link to="/history">Historico</Link>
+    <AppDataProvider>
+      <div className="app-shell">
+        <Sidebar />
+        <div className="main-wrapper">
+          <div className="ambient-glow violet" aria-hidden="true" />
+          <div className="ambient-glow magenta" aria-hidden="true" />
+          <div className="main">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/history" element={<History />} />
+              <Route path="/transaction/:id" element={<Detail />} />
+            </Routes>
+          </div>
         </div>
-      </nav>
-      <main className="page">
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/history" element={<History />} />
-          <Route path="/transaction/:id" element={<Detail />} />
-        </Routes>
-      </main>
-    </div>
+      </div>
+    </AppDataProvider>
   )
 }

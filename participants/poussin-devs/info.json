@@ -1,6 +1,9 @@
 {
   "team": "poussin-devs",
   "members": [
-    { "name": "Victor Morsoletto", "github": "@victoroliveira6-ops" }
+    { "name": "Victor Morsoletto", "github": "@victoroliveira6-ops" },
+    { "name": "Henrique Sasaki", "github": "@henriqueSasaki14" },
+    { "name": "Gustavo Nobre", "github": "@gustavonobre" },
+    { "name": "Guilherme Weiss", "github": "@gweissrs" }
   ]
 }

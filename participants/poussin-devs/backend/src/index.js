@@ -37,8 +37,10 @@ app.addHook('onRequest', (request, reply, done) => {
 app.register(routes, { prefix: '/api' })
 
 app.register(fastifyStatic, {
-  root: join(frontendRoot, 'assets'),
-  prefix: '/assets/'
+  root: frontendRoot,
+  prefix: '/',
+  wildcard: false,
+  index: false
 })
 
 app.get('/*', (req, reply) => {

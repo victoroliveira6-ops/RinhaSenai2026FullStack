@@ -5,3 +5,4 @@ node_modules/
 *.db-shm
 frontend/dist/
 backend/generated/
+frontend/public/videos/*.mp4

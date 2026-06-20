@@ -19,12 +19,13 @@ function TxRow({ label, children }) {
 
 export default function Dashboard() {
   const { balance, balanceLoading, refreshBalance } = useAppData()
-  const { data: flowData } = useMonthlyFlow()
+  const { data: flowData, refresh: refreshFlow } = useMonthlyFlow()
   const [cvvFocused, setCvvFocused] = useState(false)
 
   const handleSuccess = useCallback(async () => {
     await refreshBalance()
-  }, [refreshBalance])
+    refreshFlow()
+  }, [refreshBalance, refreshFlow])
 
   const { fields, feedback, lastTx, loading, handleChange, submit, dismissFeedback } = usePaymentForm(handleSuccess)
   const greeting = useGreeting(USER_NAME)
@@ -46,7 +47,7 @@ export default function Dashboard() {
           ) : (
             <div className="stats-widget glass-card">
               <div className="stats-widget-header">
-                <span className="stats-widget-label">Saldo líquido</span>
+                <span className="stats-widget-label">Dívida mensal</span>
               </div>
 
               <div className="stats-widget-balance">

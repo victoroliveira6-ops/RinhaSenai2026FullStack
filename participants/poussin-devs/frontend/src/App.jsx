@@ -1,4 +1,5 @@
 import { createPortal } from 'react-dom'
+import { useEffect } from 'react'
 import { Routes, Route } from 'react-router'
 import { AppDataProvider } from './context/AppDataContext.jsx'
 import Sidebar from './components/layout/Sidebar.jsx'
@@ -6,6 +7,21 @@ import Topbar from './components/layout/Topbar.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import History from './pages/History.jsx'
 import Detail from './pages/Detail.jsx'
+
+function useGlassSpotlight() {
+  useEffect(() => {
+    function onMove(e) {
+      const cards = document.querySelectorAll('.glass-card')
+      cards.forEach(card => {
+        const rect = card.getBoundingClientRect()
+        card.style.setProperty('--mx', `${e.clientX - rect.left}px`)
+        card.style.setProperty('--my', `${e.clientY - rect.top}px`)
+      })
+    }
+    window.addEventListener('mousemove', onMove, { passive: true })
+    return () => window.removeEventListener('mousemove', onMove)
+  }, [])
+}
 
 function BgVideo() {
   const target = document.getElementById('bg-root')
@@ -26,6 +42,7 @@ function BgVideo() {
 }
 
 export default function App() {
+  useGlassSpotlight()
   return (
     <AppDataProvider>
       <BgVideo />

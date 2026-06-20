@@ -278,6 +278,13 @@ export default function CreditCard3D({
 
   return (
     <div className="credit-card-3d-stage">
+      <div className="cc-hint" aria-hidden="true">
+        {isDragging
+          ? 'Solte para girar livremente'
+          : flipToBack
+            ? 'Digite o CVV · volte para ver a frente'
+            : 'Arraste para girar · foque o CVV para ver o verso'}
+      </div>
       <div
         className="credit-card-3d-interactive"
         onPointerDown={onPointerDown}
@@ -340,13 +347,6 @@ export default function CreditCard3D({
           <div className="cc-face cc-edge cc-edge-right" />
         </div>
         <div className="cc-ground-shadow" />
-      </div>
-      <div className="cc-hint" aria-hidden="true">
-        {isDragging
-          ? 'Solte para girar livremente'
-          : flipToBack
-            ? 'Digite o CVV · volte para ver a frente'
-            : 'Arraste para girar · foque o CVV para ver o verso'}
       </div>
     </div>
   )

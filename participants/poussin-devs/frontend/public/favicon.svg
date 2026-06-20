@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A529D"/>
+      <stop offset="100%" stop-color="#1C7FD6"/>
+    </linearGradient>
+  </defs>
+  <!-- Card body -->
+  <rect x="2" y="7" width="28" height="18" rx="4" fill="url(#g)"/>
+  <!-- Stripe -->
+  <rect x="2" y="12" width="28" height="5" fill="rgba(0,0,0,0.35)"/>
+  <!-- Chip -->
+  <rect x="6" y="18" width="8" height="4" rx="1" fill="rgba(255,255,255,0.55)"/>
+</svg>
